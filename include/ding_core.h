@@ -21,8 +21,7 @@
 #ifndef DING_CORE_H
 #define DING_CORE_H
 
-#include <stdint.h>
-#include <stddef.h>
+#include "ding_types.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -72,12 +71,16 @@ typedef enum {
     DING_SAVE_CHECKPOINT   = 3, /* core manages its own state internally      */
 } DingSaveMethod;
 
-/* ROM / disc identity method */
+/* ROM / disc identity method
+ * All methods produce an MD5 hash — the difference is what bytes are fed in.
+ * FULL:    MD5 of the entire ROM file (most cartridge systems)
+ * STRIPPED: MD5 after removing a known copier/format header (NES, SNES, PCE, Lynx etc.)
+ * CUSTOM:  MD5 of platform-specific extracted content (disc systems, NDS, GameCube etc.)
+ *          The exact extraction recipe is implemented per-core. */
 typedef enum {
-    DING_ID_MD5    = 0,        /* cartridge systems — hash of full ROM        */
-    DING_ID_SHA1   = 1,        /* cartridge systems — SHA1 alternative        */
-    DING_ID_SERIAL = 2,        /* disc systems — serial from disc header      */
-    DING_ID_DISCID = 3,        /* disc systems — internal disc identifier     */
+    DING_ID_MD5_FULL     = 0,
+    DING_ID_MD5_STRIPPED = 1,
+    DING_ID_MD5_CUSTOM   = 2,
 } DingIdentityMethod;
 
 /* Disc image container format */
@@ -202,7 +205,9 @@ typedef struct {
  */
 typedef struct {
     DingIdentityMethod method;
-    uint8_t            hash[20];   /* MD5 or SHA1 (SHA1-sized for future use) */
+    uint8_t            hash[16];   /* MD5 result — always 16 bytes            */
+    /* serial and disc_id are metadata only — for display and human readability.
+     * They are NOT used for identity matching. hash is the identity. */
     char               serial[32]; /* "SCUS-94163", "MK-4407", etc.           */
     char               disc_id[64];
 } DingRomIdentity;
