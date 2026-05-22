@@ -172,7 +172,7 @@ DingSaveResult ding_save_writer_finish(DingSaveWriter* w, size_t* out_size);
  *                                gracefully
  * ═══════════════════════════════════════════════════════════════════════════ */
 
-typedef struct {
+typedef struct DingSaveReader{
     const u8* buf;        /* input buffer                                     */
     size_t    buf_size;   /* total size of buf                                */
     size_t    pos;        /* current read position                            */
