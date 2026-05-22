@@ -117,13 +117,13 @@ typedef struct {
  *   3. ding_save_writer_finish() to seal the file and get final size
  * ═══════════════════════════════════════════════════════════════════════════ */
 
-typedef struct {
-    u8*    buf;           /* caller-owned output buffer                       */
-    size_t buf_size;      /* total capacity of buf in bytes                   */
-    size_t pos;           /* current write position                           */
-    u32    block_count;   /* number of blocks written so far                  */
+typedef struct DingSaveWriter {
+    u8*    buf;
+    size_t buf_size;
+    size_t pos;
+    u32    block_count;
     char   platform[DING_SAVE_PLATFORM_LEN];
-    u8     valid;         /* 0 if an error has occurred — writes become no-op */
+    u8     valid;
 } DingSaveWriter;
 
 /*
